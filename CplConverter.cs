@@ -130,7 +130,7 @@ namespace CPL_Converter
             }
 
             // Возврат количество обработанных строк
-            return RowCount;
+            return RowCount - 2;
         }
 
 

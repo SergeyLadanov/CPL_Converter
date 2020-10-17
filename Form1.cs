@@ -57,9 +57,21 @@ namespace CPL_Converter
         // Обработка нажатия кнопки
         private void OpenButton_Click(object sender, EventArgs e)
         {
-            CplConverter conv = new CplConverter("D:\\Test.xlsx");
-            
-            conv.HandleCPL("D:\\WorkSpace\\FrequencyRegulator\\freqreq_control\\Pick Place\\CPL.txt");
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                int RowCount = 0;
+                CplConverter conv = new CplConverter(GetNewFileName(openFileDialog1.FileName));
+
+                labelStatus.Text = "Обработка...";
+                RowCount = conv.HandleCPL(openFileDialog1.FileName);
+                labelRowCount.Text = RowCount.ToString();
+                labelStatus.Text = "Выполнено";
+            }
+
+                //CplConverter conv = new CplConverter("D:\\Test.xlsx");
+
+                //conv.HandleCPL("D:\\WorkSpace\\FrequencyRegulator\\freqreq_control\\Pick Place\\CPL.txt");
         }
 
         private void Form1_Load(object sender, EventArgs e)
