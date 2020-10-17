@@ -14,6 +14,7 @@ namespace CPL_Converter
         private StreamReader sr;
         private int ColumnCount = 0;
         private String[] ColumnNames = { "Designator", "Layer", "Mid X", "Mid Y", "Rotation" };
+        private bool AutoSave = false;
 
 
         public CplConverter(String OutFileName)
@@ -21,6 +22,17 @@ namespace CPL_Converter
             FilePath = OutFileName;
         }
 
+        // Разрешение автосохранения
+        public void AutoSaveEnable()
+        {
+            AutoSave = true;
+        }
+
+        // Запрещение автосохранения
+        public void AutoSaveDisable()
+        {
+            AutoSave = false;
+        }
         // Функция рассчета числа колонок в текстовом файле
         private int GetColumnCount(String Input)
         {
@@ -71,7 +83,7 @@ namespace CPL_Converter
         }
         
         // Сохранение данных  в MS Excel
-        private void OutInExcel(StreamReader inputSr)
+        private int OutInExcel(StreamReader inputSr)
         {
             String Line;
             String[] RowData;
@@ -106,15 +118,25 @@ namespace CPL_Converter
             }
 
             // Сохранение данных
-            excelApp.Visible = true;
-            excelApp.UserControl = true;
-            //workBook.SaveAs(FilePath);
-            //workBook.Close();
+            if (AutoSave)
+            {
+                workBook.SaveAs(FilePath);
+                workBook.Close();
+            }
+            else
+            {
+                excelApp.Visible = true;
+                excelApp.UserControl = true;
+            }
+
+            // Возврат количество обработанных строк
+            return RowCount;
         }
 
 
-        public void HandleCPL(String InputFileName)
+        public int HandleCPL(String InputFileName)
         {
+            int RowCount = 0;
             sr = new StreamReader(InputFileName);
             String Line;
 
@@ -135,11 +157,12 @@ namespace CPL_Converter
             // Если удалось выделить колонки
             if (ColumnCount > 0)
             {
-                OutInExcel(sr);
+                RowCount = OutInExcel(sr);
             }
 
             sr.Close();
 
+            return RowCount;
         }
     }
 }

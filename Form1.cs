@@ -15,6 +15,34 @@ namespace CPL_Converter
     {
         private String filename = "";
         private bool StartHide = false;
+
+
+        //Функция выделения директории из пути
+        private String GetFileDirectory(String Path)
+        {
+            String[] Tmp = Path.Split('\\');
+            Path = Path.Replace(Tmp[Tmp.Length - 1], "");
+            return Path;
+        }
+
+        // Функция выделения имени файла из пути
+        private String GetFileName(String Path)
+        {
+            String[] Tmp = Path.Split('\\');
+            Path = Tmp[Tmp.Length - 1];
+            return Path;
+        }
+
+        // Функция генерации нового имени файла
+        private String GetNewFileName(String Path)
+        {
+            String Dir = GetFileDirectory(Path);
+            String Fil = GetFileName(Path);
+            Fil = Fil.Split('.')[0];
+            Fil = Fil + "_new.xlsx";
+            Path = Dir + Fil;
+            return Path;
+        }
         public Form1()
         {
             // Проверка есть ли аргументы приложения
@@ -25,12 +53,8 @@ namespace CPL_Converter
             }
             
             InitializeComponent();
-            label1.Text = filename;
-
-
-
         }
-
+        // Обработка нажатия кнопки
         private void OpenButton_Click(object sender, EventArgs e)
         {
             CplConverter conv = new CplConverter("D:\\Test.xlsx");
@@ -43,10 +67,16 @@ namespace CPL_Converter
             // Не показывать форму при запуске
             if (StartHide)
             {
+                int RowCount = 0;
                 this.Visible = false;
                 this.ShowInTaskbar = false;
 
-                MessageBox.Show("Файл успешно конвертирован и помещен в каталог с исходным файлом.");
+                CplConverter conv = new CplConverter(GetNewFileName(filename));
+                conv.AutoSaveEnable();
+                RowCount = conv.HandleCPL(filename);
+
+                MessageBox.Show("Файл успешно конвертирован и помещен в каталог с исходным файлом.\r\n" + 
+                    "Количество обработанных строк: " + RowCount.ToString());
                 this.Close();
             }
         }
