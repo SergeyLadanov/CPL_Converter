@@ -13,6 +13,8 @@ namespace CPL_Converter
         private String FilePath = "";
         private StreamReader sr;
         private int ColumnCount = 0;
+        private String[] ColumnNames = { "Designator", "Layer", "Mid X", "Mid Y", "Rotation" };
+
 
         public CplConverter(String OutFileName)
         {
@@ -37,6 +39,15 @@ namespace CPL_Converter
             return Result;
         }
 
+        // Функция исправления слов в строке
+        private String LineCorrection(String InputStr)
+        {
+            InputStr = InputStr.Replace("TopLayer", "Top");
+            InputStr = InputStr.Replace("BottomLayer", "Bottom");
+            return InputStr;
+        }
+
+        //Функция выделения данных из строки
         private String[] ParseRow(String Input)
         {
             // Разделение строки по пробелам
@@ -62,6 +73,9 @@ namespace CPL_Converter
         // Сохранение данных  в MS Excel
         private void OutInExcel(StreamReader inputSr)
         {
+            String Line;
+            String[] RowData;
+            int RowCount = 2;
             // Создаём объект - экземпляр нашего приложения
             Excel.Application excelApp = new Excel.Application();
             // Создаём экземпляр рабочей книги Excel
@@ -70,13 +84,32 @@ namespace CPL_Converter
             Excel.Worksheet workSheet;
             workBook = excelApp.Workbooks.Add();
             workSheet = (Excel.Worksheet)workBook.Worksheets.get_Item(1);
-            // Заполняем первый столбец листа из массива Y[0..n-1]
-            //for (int j = 1; j <= n; j++)
-            //    workSheet.Cells[j, 1] = j;
 
 
-            workBook.SaveAs(FilePath);
-            workBook.Close();
+            // Заполнение шапки таблицы
+            for (int i = 1; i <= ColumnNames.Length; i++)
+            {
+                workSheet.Cells[1, i] = ColumnNames[i - 1];
+            }
+            
+            // Заполнение данными
+            while ((Line = inputSr.ReadLine()) != null)
+            {
+                Line = LineCorrection(Line);
+                RowData = ParseRow(Line);
+                for (int i = 1; i <= ColumnCount; i++)
+                {
+                    workSheet.Cells[RowCount, i] = RowData[i - 1];
+                }
+
+                RowCount++;
+            }
+
+            // Сохранение данных
+            excelApp.Visible = true;
+            excelApp.UserControl = true;
+            //workBook.SaveAs(FilePath);
+            //workBook.Close();
         }
 
 
@@ -102,12 +135,7 @@ namespace CPL_Converter
             // Если удалось выделить колонки
             if (ColumnCount > 0)
             {
-
-
-                Row = ParseRow(sr.ReadLine());
-
-                Row[1] = "";
-                //OutInExcel(sr);
+                OutInExcel(sr);
             }
 
             sr.Close();
