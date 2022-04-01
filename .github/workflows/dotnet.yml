@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ ci_cd ]
+    branches: '*'
   pull_request:
-    branches: [ ci_cd ]
+    branches: '*'
 
 jobs:
   build:
@@ -23,7 +23,5 @@ jobs:
       run: dotnet restore
     - name: Build
       run: MSBuild CPL_Converter.csproj /p:Configuration=Release
-    - name: List of outputs
-      run: ls bin/Release
     - name: Test
       run: dotnet test --no-build --verbosity normal
