@@ -23,5 +23,7 @@ jobs:
       run: dotnet restore
     - name: Build
       run: MSBuild CPL_Converter.csproj /p:Configuration=Release
+    - name: List of outputs
+      run: ls bin/Release
     - name: Test
       run: dotnet test --no-build --verbosity normal
