@@ -140,8 +140,6 @@ namespace CPL_Converter
             sr = new StreamReader(InputFileName);
             String Line;
 
-            String[] Row;
-
             ColumnCount = 0;
 
             // Поиск данных о расположении компонентов
