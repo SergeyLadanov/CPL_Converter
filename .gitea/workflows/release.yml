@@ -1,0 +1,40 @@
+name: Release project
+
+on: 
+  push:
+    tags:
+    - '*'
+
+jobs:      
+  build:
+    name: Building project
+    uses: ./.gitea/workflows/build.yml
+  upload:
+    name: Uploading files
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifatcs
+        uses: actions/download-artifact@v3
+        with:
+          name: Build_Output.tar
+
+      - name: Rename output files
+        run: mv Build_Output.tar/Build_Output.tar CPL_Converter_$GITHUB_REF_NAME.tar
+
+      - name: List of files
+        run: ls
+
+      - name: setup go
+        uses: https://github.com/actions/setup-go@v4
+        with:
+          go-version: '>=1.20.1'
+
+
+      - name: Use Go Action  
+        id: use-go-action
+        uses: https://gitea.com/actions/release-action@main
+        with:
+          files: |-
+            CPL_Converter_*.tar                                                 
+          api_key: '${{secrets.RELEASE_TOKEN}}'
