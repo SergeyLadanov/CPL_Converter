@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,6 +12,17 @@ namespace CPL_Converter
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>
+
+
+        [DllImport("kernel32.dll")]
+        public static extern bool FreeConsole();
+
+
+        static Program()
+        {
+            FreeConsole();
+        }
+
         [STAThread]
         static void Main()
         {

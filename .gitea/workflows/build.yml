@@ -1,0 +1,34 @@
+name: Build dotnet
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: '*'
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+  
+      - name: Build
+        run: dotnet publish CPL_Converter.csproj -c Release -o CPL_Converter -r win-x64 --self-contained false /p:EnableWindowsTargeting=true /p:FileVersion=$GITHUB_REF_NAME
+      
+      - name: Tar files
+        run: tar -cvf Build_Output.tar CPL_Converter
+        
+      - name: Upload artifatcs
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_Output.tar
+          path: |
+              Build_Output.tar  
