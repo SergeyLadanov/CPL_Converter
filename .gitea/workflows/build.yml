@@ -1,0 +1,35 @@
+name: Build dotnet
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: '*'
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+    - name: make   
+      uses: embedd-actions/dotnet-sdk-ci@6.0
+      with: 
+        build-type: Release
+        build-output: Build
+        target-platform: win-x64
+        self-contained: false
+        windows-targeting: true
+      
+      - name: Tar files
+        run: tar -cvf Build_Output.tar Build
+        
+      - name: Upload artifatcs
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build_Output.tar
+          path: |
+              Build_Output.tar  
