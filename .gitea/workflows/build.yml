@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Build project   
-        uses: embedd-actions/dotnet-sdk-ci@6.0
+        uses: embedd-actions/dotnet-sdk-ci@v6.0
         with: 
           build-type: Release
           build-output: Build
