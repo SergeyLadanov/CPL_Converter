@@ -14,15 +14,6 @@ jobs:
       # Checkout repository
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      #- name: Build project   
-      #  uses: embedd-actions/dotnet-sdk-ci@v6.0
-      #  with: 
-      #    build-type: Release
-      #    build-output: Build
-      #    target-platform: win-x64
-      #    self-contained: false
-      #    windows-targeting: true
 
       - name: Install .NET Core
         uses: actions/setup-dotnet@v3
