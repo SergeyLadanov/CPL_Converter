@@ -104,14 +104,12 @@ namespace CPL_Converter
 
             SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
 
-            var workbook = new ExcelFile();
+            ExcelFile workbook = new ExcelFile();
             var worksheet = workbook.Worksheets.Add("Writing");
 
 
-            worksheet.Cells[0, 0].Value = "sdfsdf";
 
 
-            workbook.Save("Test123.xlsx");
 
 
 
@@ -125,24 +123,24 @@ namespace CPL_Converter
             //workSheet = (Excel.Worksheet)workBook.Worksheets.get_Item(1);
 
 
-            //// Заполнение шапки таблицы
-            //for (int i = 1; i <= ColumnNames.Length; i++)
-            //{
-            //    workSheet.Cells[1, i] = ColumnNames[i - 1];
-            //}
+            // Заполнение шапки таблицы
+            for (int i = 1; i <= ColumnNames.Length; i++)
+            {
+                worksheet.Cells[0, i - 1].Value = ColumnNames[i - 1];
+            }
 
-            //// Заполнение данными
-            //while ((Line = inputSr.ReadLine()) != null)
-            //{
-            //    Line = LineCorrection(Line);
-            //    RowData = ParseRow(Line);
-            //    for (int i = 1; i <= ColumnCount; i++)
-            //    {
-            //        workSheet.Cells[RowCount, i] = RowData[i - 1];
-            //    }
+            // Заполнение данными
+            while ((Line = inputSr.ReadLine()) != null)
+            {
+                Line = LineCorrection(Line);
+                RowData = ParseRow(Line);
+                for (int i = 1; i <= ColumnCount; i++)
+                {
+                    worksheet.Cells[RowCount - 1, i - 1].Value = RowData[i - 1];
+                }
 
-            //    RowCount++;
-            //}
+                RowCount++;
+            }
 
             //// Сохранение данных
             //if (AutoSave)
@@ -155,6 +153,9 @@ namespace CPL_Converter
             //    excelApp.Visible = true;
             //    excelApp.UserControl = true;
             //}
+
+
+            workbook.Save("Pick and place.xlsx");
 
             // Возврат количество обработанных строк
             return RowCount - 2;
