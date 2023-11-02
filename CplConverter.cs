@@ -3,8 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
+
+
+using System.Reflection;
+
+using GemBox.Spreadsheet;
+using System.Runtime.Versioning;
+using System.Windows.Forms;
 
 namespace CPL_Converter
 {
@@ -81,29 +87,30 @@ namespace CPL_Converter
 
             return Result;
         }
-        
+
+
+
+        [SupportedOSPlatform("windows")]
+
         // Сохранение данных  в MS Excel
         private int OutInExcel(StreamReader inputSr)
         {
             String Line;
             String[] RowData;
             int RowCount = 2;
-            // Создаём объект - экземпляр нашего приложения
-            Excel.Application excelApp = new Excel.Application();
-            // Создаём экземпляр рабочей книги Excel
-            Excel.Workbook workBook;
-            // Создаём экземпляр листа Excel
-            Excel.Worksheet workSheet;
-            workBook = excelApp.Workbooks.Add();
-            workSheet = (Excel.Worksheet)workBook.Worksheets.get_Item(1);
+
+            SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
+
+            ExcelFile workbook = new ExcelFile();
+            var worksheet = workbook.Worksheets.Add("List1");
 
 
             // Заполнение шапки таблицы
             for (int i = 1; i <= ColumnNames.Length; i++)
             {
-                workSheet.Cells[1, i] = ColumnNames[i - 1];
+                worksheet.Cells[0, i - 1].Value = ColumnNames[i - 1];
             }
-            
+
             // Заполнение данными
             while ((Line = inputSr.ReadLine()) != null)
             {
@@ -111,7 +118,7 @@ namespace CPL_Converter
                 RowData = ParseRow(Line);
                 for (int i = 1; i <= ColumnCount; i++)
                 {
-                    workSheet.Cells[RowCount, i] = RowData[i - 1];
+                    worksheet.Cells[RowCount - 1, i - 1].Value = RowData[i - 1];
                 }
 
                 RowCount++;
@@ -120,20 +127,33 @@ namespace CPL_Converter
             // Сохранение данных
             if (AutoSave)
             {
-                workBook.SaveAs(FilePath);
-                workBook.Close();
+                workbook.Save(FilePath);
             }
             else
             {
-                excelApp.Visible = true;
-                excelApp.UserControl = true;
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+                saveFileDialog1.Filter = "Excel files (*.xlsx)|*.xlsx";
+                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.RestoreDirectory = true;
+                saveFileDialog1.Title = "Путь для сохранения файла";
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    workbook.Save(saveFileDialog1.FileName);
+                }
+                else
+                {
+
+                }
             }
+
 
             // Возврат количество обработанных строк
             return RowCount - 2;
         }
 
-
+        [SupportedOSPlatform("windows")]
         public int HandleCPL(String InputFileName)
         {
             int RowCount = 0;
