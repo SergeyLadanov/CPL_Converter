@@ -92,51 +92,6 @@ namespace CPL_Converter
         }
 
 
-        private string GetExcelColumnName(int columnNumber)
-        {
-            string columnName = "";
-
-            while (columnNumber > 0)
-            {
-                int modulo = (columnNumber - 1) % 26;
-                columnName = Convert.ToChar('A' + modulo) + columnName;
-                columnNumber = (columnNumber - modulo) / 26;
-            }
-
-            return columnName;
-        }
-
-        private Cell InsertCell(uint rowIndex, uint columnIndex, Worksheet worksheet)
-        {
-            Row row = null;
-            var sheetData = worksheet.GetFirstChild<SheetData>();
-
-            // Check if the worksheet contains a row with the specified row index.
-            row = sheetData.Elements<Row>().FirstOrDefault(r => r.RowIndex == rowIndex);
-            if (row == null)
-            {
-                row = new Row() { RowIndex = rowIndex };
-                sheetData.Append(row);
-            }
-
-            // Convert column index to column name for cell reference.
-            var columnName = GetExcelColumnName((int)columnIndex);
-            var cellReference = columnName + rowIndex;      // e.g. A1
-
-            // Check if the row contains a cell with the specified column name.
-            var cell = row.Elements<Cell>()
-                       .FirstOrDefault(c => c.CellReference.Value == cellReference);
-            if (cell == null)
-            {
-                cell = new Cell() { CellReference = cellReference };
-                if (row.ChildElements.Count < columnIndex)
-                    row.AppendChild(cell);
-                else
-                    row.InsertAt(cell, (int)columnIndex);
-            }
-
-            return cell;
-        }
 
 
 
@@ -147,61 +102,16 @@ namespace CPL_Converter
             String[] RowData;
             int RowCount = 2;
 
-            //SpreadsheetDocument document = SpreadsheetDocument.Create("TestFile.xls", SpreadsheetDocumentType.Workbook);
+            SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
+
+            var workbook = new ExcelFile();
+            var worksheet = workbook.Worksheets.Add("Writing");
 
 
-            //WorkbookPart workbookPart = document.AddWorkbookPart();
-            //workbookPart.Workbook = new Workbook();
-
-            //WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            //worksheetPart.Worksheet = new Worksheet(new SheetData());
-
-            //Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
-
-            //Sheet sheet = new Sheet() { Id = workbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "List1" };
+            worksheet.Cells[0, 0].Value = "sdfsdf";
 
 
-            //sheets.Append(sheet);
-
-            //workbookPart.Workbook.Save();
-
-            //document.Save();
-
-
-            using (SpreadsheetDocument document = SpreadsheetDocument.Create("Test.xlsx", SpreadsheetDocumentType.Workbook))
-            {
-                //CreatePartsForExcel(package, data);
-
-                WorkbookPart workbookPart = document.AddWorkbookPart();
-                workbookPart.Workbook = new Workbook();
-
-                WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-                worksheetPart.Worksheet = new Worksheet(new SheetData());
-
-                Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
-
-                Sheet sheet = new Sheet() { Id = workbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "List1" };
-
-
-                sheets.Append(sheet);
-
-                workbookPart.Workbook.First().AppendChild(new Row());
-
-                //sheet.First().Last().AppendChild(new Cell() { CellValue = new CellValue("test") });
-
-
-                //SheetData data = sheet.GetFirstChild<SheetData>();
-
-
-                Cell cell = InsertCell(1, 1, worksheetPart.Worksheet);
-
-                cell.CellValue = new CellValue("skdcjskdjc");
-
-
-                workbookPart.Workbook.Save();
-
-
-            }
+            workbook.Save("Test123.xlsx");
 
 
 
