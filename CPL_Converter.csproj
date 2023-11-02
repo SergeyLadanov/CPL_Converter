@@ -19,8 +19,6 @@
   <ItemGroup>
     <PackageReference Include="GemBox.Spreadsheet" Version="49.0.1509" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="OfficeOpenXml.Core.ExcelPackage" Version="1.0.0" />
-    <PackageReference Include="Open-XML-SDK" Version="2.9.1" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project>

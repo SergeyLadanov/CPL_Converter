@@ -5,15 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using OfficeOpenXml;
-using OfficeOpenXml.Core.ExcelPackage;
+
 using System.Reflection;
 
 using GemBox.Spreadsheet;
+using System.Runtime.Versioning;
+using System.Windows.Forms;
 
 namespace CPL_Converter
 {
@@ -93,7 +90,7 @@ namespace CPL_Converter
 
 
 
-
+        [SupportedOSPlatform("windows")]
 
         // Сохранение данных  в MS Excel
         private int OutInExcel(StreamReader inputSr)
@@ -105,22 +102,7 @@ namespace CPL_Converter
             SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
 
             ExcelFile workbook = new ExcelFile();
-            var worksheet = workbook.Worksheets.Add("Writing");
-
-
-
-
-
-
-
-            //// Создаём объект - экземпляр нашего приложения
-            //Excel.Application excelApp = new Excel.Application();
-            //// Создаём экземпляр рабочей книги Excel
-            //Excel.Workbook workBook;
-            //// Создаём экземпляр листа Excel
-            //Excel.Worksheet workSheet;
-            //workBook = excelApp.Workbooks.Add();
-            //workSheet = (Excel.Worksheet)workBook.Worksheets.get_Item(1);
+            var worksheet = workbook.Worksheets.Add("List1");
 
 
             // Заполнение шапки таблицы
@@ -142,26 +124,36 @@ namespace CPL_Converter
                 RowCount++;
             }
 
-            //// Сохранение данных
-            //if (AutoSave)
-            //{
-            //    workBook.SaveAs(FilePath);
-            //    workBook.Close();
-            //}
-            //else
-            //{
-            //    excelApp.Visible = true;
-            //    excelApp.UserControl = true;
-            //}
+            // Сохранение данных
+            if (AutoSave)
+            {
+                workbook.Save(FilePath);
+            }
+            else
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
+                saveFileDialog1.Filter = "Excel files (*.xlsx)|*.xlsx";
+                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.RestoreDirectory = true;
+                saveFileDialog1.Title = "Путь для сохранения файла";
 
-            workbook.Save("Pick and place.xlsx");
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    workbook.Save(saveFileDialog1.FileName);
+                }
+                else
+                {
+
+                }
+            }
+
 
             // Возврат количество обработанных строк
             return RowCount - 2;
         }
 
-
+        [SupportedOSPlatform("windows")]
         public int HandleCPL(String InputFileName)
         {
             int RowCount = 0;

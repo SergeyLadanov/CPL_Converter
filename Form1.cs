@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -55,6 +56,7 @@ namespace CPL_Converter
             InitializeComponent();
         }
         // Обработка нажатия кнопки
+        [SupportedOSPlatform("windows")]
         private void OpenButton_Click(object sender, EventArgs e)
         {
 
@@ -74,6 +76,7 @@ namespace CPL_Converter
                 //conv.HandleCPL("D:\\WorkSpace\\FrequencyRegulator\\freqreq_control\\Pick Place\\CPL.txt");
         }
 
+        [SupportedOSPlatform("windows")]
         private void Form1_Load(object sender, EventArgs e)
         {
             // Не показывать форму при запуске
