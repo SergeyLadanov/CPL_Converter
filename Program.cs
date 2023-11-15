@@ -14,14 +14,14 @@ namespace CPL_Converter
         /// </summary>
 
 
-        [DllImport("kernel32.dll")]
-        public static extern bool FreeConsole();
+        // [DllImport("kernel32.dll")]
+        // public static extern bool FreeConsole();
 
 
-        static Program()
-        {
-            FreeConsole();
-        }
+        // static Program()
+        // {
+        //    FreeConsole();
+        // }
 
         [STAThread]
         static void Main()
